@@ -64,7 +64,7 @@ var Move = function(from, to, piece, attack)
 
 // Implement each Piece moves
 
-// PAWN class
+/////////////////////////////////////////////// PAWN //////////////////////////////////////////////////////
 var Pawn = function(row, col, color){
     Piece.call(this, row, col, PiecesEnum.PAWN, color)
     this.doneMove = false;
@@ -152,9 +152,9 @@ Pawn.prototype.getValidMoves = function(){
             {
      
                  let move = new Move([this.row, this.col],
-                     [this.row + 1, this.col + j],
-                     this,
-                     boardPieces[this.row + 1][this.col + j]
+                                    [this.row + 1, this.col + j],
+                                    this,
+                                    boardPieces[this.row + 1][this.col + j]
                  );
                  validMoves.push(move);
              }
@@ -163,3 +163,125 @@ Pawn.prototype.getValidMoves = function(){
 
     return validMoves;
 }
+
+//////////////////////////////////////// ROOK ///////////////////////////////////////
+
+var Rook = function(row, col, color){
+    Piece.call(this, row, col, PiecesEnum.ROOK, color);
+
+    this.image = 'assets/Rook-White.png';
+    if(this.color === ColorsEnum.BLACK)
+        this.image = 'assets/Rook-Black.png';
+    
+    boardPieces[row][col] = this;
+}
+
+Rook.prototype = Object.create(Piece.prototype);
+
+Rook.prototype.getValidMoves = function(){
+    let validMoves = [];
+
+    // moving right
+    for(let j = this.col + 1; j < 8; j++){
+        // empty square
+        if(boardPieces[this.row][j] === null){
+            move = new Move([this.row, this.col],
+                        [this.row, j],
+                        this,
+                        null);
+            
+            validMoves.push(move);
+            continue;
+        }
+        // attack another piece
+        if(this.color !== boardPieces[this.row][j]){
+            move = new Move([this.row, this.col],
+                        [this.row, j],
+                        this,
+                        boardPieces[this.row][j]);
+            
+            validMoves.push(move);
+        }
+
+        break;
+    }
+
+    // moving left
+    for(let j = this.col - 1; j >= 0; j--){
+        // empty square
+        if(boardPieces[this.row][j] === null){
+            move = new Move([this.row, this.col],
+                        [this.row, j],
+                        this,
+                        null);
+            
+            validMoves.push(move);
+            continue;
+        }
+        // attack another piece
+        if(this.color !== boardPieces[this.row][j]){
+            move = new Move([this.row, this.col],
+                        [this.row, j],
+                        this,
+                        boardPieces[this.row][j]);
+            
+            validMoves.push(move);
+        }
+
+        break;
+    }
+
+    // move upwards
+    for(let i = this.row - 1; i >= 0; i--){
+        if(boardPieces[i][this.col] == null){
+            move = new Move([this.row, this.col],
+                [i, this.col],
+                this,
+                null);
+    
+            validMoves.push(move);
+            continue;
+        }
+
+        //attack another piece
+        if(this.color !== boardPieces[i][this.col]){
+            move = new Move([this.row, this.col],
+                [i, this.col],
+                this,
+                boardPieces[i][this.col]);
+    
+            validMoves.push(move);
+        }
+
+        break;
+    }
+
+    // move downwards
+    for(let i = this.row + 1; i < 8; i++){
+        if(boardPieces[i][this.col] == null){
+            move = new Move([this.row, this.col],
+                [i, this.col],
+                this,
+                null);
+    
+            validMoves.push(move);
+            continue;
+        }
+
+        //attack another piece
+        if(this.color !== boardPieces[i][this.col]){
+            move = new Move([this.row, this.col],
+                [i, this.col],
+                this,
+                boardPieces[i][this.col]);
+    
+            validMoves.push(move);
+        }
+
+        break;
+    }
+
+    return validMoves;
+}
+
+/////////////////////////////////////////// Knight /////////////////////////////////////////////

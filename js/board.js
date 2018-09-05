@@ -1,12 +1,8 @@
-var squaresIDs = new Array(8);
-var boardPieces = new Array(8);
+
 (function initBoard(){
     
     var board = document.getElementById('chessBoard');
     var isWhite = true;
-
-    var attackedWhitePieces = [];
-    var attackedBlackPieces = [];
 
     //draw squares
     for(let i = 0; i < 8; i++){
@@ -58,3 +54,14 @@ var boardPieces = new Array(8);
     Turn = ColorsEnum.WHITE;
 
 })();
+
+
+rook = new Rook(4, 5, ColorsEnum.WHITE);
+moves = rook.getValidMoves();
+
+for(let i = 0; i < moves.length; i++){
+    let row = moves[i].to[0];
+    let col = moves[i].to[1];
+
+    console.log(row + " " + col);
+}
