@@ -35,4 +35,26 @@ var boardPieces = new Array(8);
         isWhite = !isWhite;
     }
 
+    // Chess pieces locations
+    for(let i = 0 ; i < 8; i++){
+        boardPieces[6][i] = new Pawn(6, i, ColorsEnum.WHITE);
+        boardPieces[1][i] = new Pawn(1, i, ColorsEnum.BLACK);
+    }
+
+    // draw Pieces
+    for(let i = 0; i < 8; i++){
+        var whiteImage = document.createElement('img');
+        whiteImage.src = boardPieces[6][i].image;
+
+        var imageDiv = document.getElementById(boardPieces[6][i].getPieceDivID());
+
+        imageDiv.addEventListener('click', handleSelectedDiv);
+
+        imageDiv.appendChild(whiteImage);
+
+    }
+
+    // white player starts
+    Turn = ColorsEnum.WHITE;
+
 })();

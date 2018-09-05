@@ -27,3 +27,8 @@ body {
 .black{
     background-color: black;
 }
+
+.suggestedMove{
+    opacity: 0.5;
+    background-color:green;
+}

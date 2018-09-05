@@ -66,7 +66,6 @@ var Move = function(from, to, piece, attack)
 
 // PAWN class
 var Pawn = function(row, col, color){
-    console.log(color);
     Piece.call(this, row, col, PiecesEnum.PAWN, color)
     this.doneMove = false;
     
