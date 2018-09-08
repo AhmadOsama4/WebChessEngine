@@ -64,7 +64,7 @@ var Move = function(from, to, piece, attack)
 
 // Implement each Piece moves
 
-/////////////////////////////////////////////// PAWN //////////////////////////////////////////////////////
+/////////////////////////////////////////////// PAWN(Askary) //////////////////////////////////////////////////////
 var Pawn = function(row, col, color){
     Piece.call(this, row, col, PiecesEnum.PAWN, color)
     this.doneMove = false;
@@ -72,18 +72,16 @@ var Pawn = function(row, col, color){
     this.image = 'assets/Pawn-White.png';
     if(this.color === ColorsEnum.BLACK)
         this.image = 'assets/Pawn-Black.png';
-
-    boardPieces[row][col] = this;
 }
 
 Pawn.prototype = Object.create(Piece.prototype);
 
-Pawn.prototype.getValidMoves = function(){
+Pawn.prototype.getValidMoves = function(currentBoard){
     let validMoves = [];
     
     if(this.color === ColorsEnum.WHITE){ // White Pawn
         // move 1 step forward
-        if(this.row > 0 && boardPieces[this.row - 1][this.col] === null){ 
+        if(this.row > 0 && currentBoard[this.row - 1][this.col] === null){ 
             let move = new Move([this.row, this.col],
                                 [this.row - 1, this.col],
                                 this,
@@ -94,8 +92,8 @@ Pawn.prototype.getValidMoves = function(){
         }
 
         // move 2 steps forward
-        if(this.doneMove === false && boardPieces[this.row - 1][this.col] === null 
-            && boardPieces[this.row - 2][this.col] === null) // not yet moved
+        if(this.doneMove === false && currentBoard[this.row - 1][this.col] === null 
+            && currentBoard[this.row - 2][this.col] === null) // not yet moved
         { 
             let move = new Move([this.row, this.col],
                 [this.row - 2, this.col],
@@ -107,14 +105,14 @@ Pawn.prototype.getValidMoves = function(){
 
         // Attack other pieces
         for(let j = -1; j < 2; j += 2){
-            if(this.col + j < 8 && this.col + j >= 0 && this.row > 0 && boardPieces[this.row - 1][this.col + j] !== null
-               && boardPieces[this.row - 1][this.col + j].color !== this.color)
+            if(this.col + j < 8 && this.col + j >= 0 && this.row > 0 && currentBoard[this.row - 1][this.col + j] !== null
+               && currentBoard[this.row - 1][this.col + j].color !== this.color)
             {
      
                  let move = new Move([this.row, this.col],
                      [this.row - 1, this.col + j],
                      this,
-                     boardPieces[this.row - 1][this.col + j]
+                     currentBoard[this.row - 1][this.col + j]
                  );
                  validMoves.push(move);
              }
@@ -122,7 +120,7 @@ Pawn.prototype.getValidMoves = function(){
     }
     else{ // Black Pawn
         // move 1 step forward
-        if(this.row < 7 && boardPieces[this.row + 1][this.col] === null){ // move 1 step forward
+        if(this.row < 7 && currentBoard[this.row + 1][this.col] === null){ // move 1 step forward
             let move = new Move([this.row, this.col],
                                 [this.row + 1, this.col],
                                 this,
@@ -133,8 +131,8 @@ Pawn.prototype.getValidMoves = function(){
         }
 
          // move 2 steps forward
-        if(this.doneMove === false && boardPieces[this.row + 1][this.col] === null 
-            && boardPieces[this.row + 2][this.col] === null) // not yet moved
+        if(this.doneMove === false && currentBoard[this.row + 1][this.col] === null 
+            && currentBoard[this.row + 2][this.col] === null) // not yet moved
         { 
             let move = new Move([this.row, this.col],
                 [this.row + 2, this.col],
@@ -147,14 +145,14 @@ Pawn.prototype.getValidMoves = function(){
 
         // Attack other pieces
         for(let j = -1; j < 2; j += 2){
-            if(this.col + j < 8 && this.col + j >= 0 && this.row < 7 && boardPieces[this.row + 1][this.col + j] !== null
-               && boardPieces[this.row + 1][this.col + j].color !== this.color)
+            if(this.col + j < 8 && this.col + j >= 0 && this.row < 7 && currentBoard[this.row + 1][this.col + j] !== null
+               && currentBoard[this.row + 1][this.col + j].color !== this.color)
             {
      
                  let move = new Move([this.row, this.col],
                                     [this.row + 1, this.col + j],
                                     this,
-                                    boardPieces[this.row + 1][this.col + j]
+                                    currentBoard[this.row + 1][this.col + j]
                  );
                  validMoves.push(move);
              }
@@ -164,7 +162,7 @@ Pawn.prototype.getValidMoves = function(){
     return validMoves;
 }
 
-//////////////////////////////////////// ROOK ///////////////////////////////////////
+//////////////////////////////////////// ROOK(Tabya) ///////////////////////////////////////
 
 var Rook = function(row, col, color){
     Piece.call(this, row, col, PiecesEnum.ROOK, color);
@@ -172,116 +170,263 @@ var Rook = function(row, col, color){
     this.image = 'assets/Rook-White.png';
     if(this.color === ColorsEnum.BLACK)
         this.image = 'assets/Rook-Black.png';
-    
-    boardPieces[row][col] = this;
 }
 
 Rook.prototype = Object.create(Piece.prototype);
 
-Rook.prototype.getValidMoves = function(){
+Rook.prototype.getValidMoves = function(currentBoard){
     let validMoves = [];
 
-    // moving right
-    for(let j = this.col + 1; j < 8; j++){
-        // empty square
-        if(boardPieces[this.row][j] === null){
-            move = new Move([this.row, this.col],
-                        [this.row, j],
-                        this,
-                        null);
+    let dr = [0, 0, 1,-1];
+    let dc = [1,-1, 0, 0];
+
+    let row, col;
+    for(let i = 0; i < 4; i++){
+        row = this.row;
+        col = this.col;
+        for(let j = 0; j < 8; j++){
+            row += dr[i];
+            col += dc[i];
+
+            if(row < 0 || row >= 8 || col < 0 || col >= 8)
+                break;
             
-            validMoves.push(move);
-            continue;
+            if(currentBoard[row][col] === null){
+                let move = new Move([this.row, this.col],
+                                    [row, col],
+                                    this,
+                                    null);
+                
+                validMoves.push(move);
+            }
+            else{
+                // attack enemy
+                if(currentBoard[row][col].color !== this.color){
+                    let move = new Move([this.row, this.col],
+                                        [row, col],
+                                        this,
+                                        currentBoard[row][col]);
+                    
+                    validMoves.push(move);
+                }                
+
+                break;
+            }
+
         }
-        // attack another piece
-        if(this.color !== boardPieces[this.row][j]){
-            move = new Move([this.row, this.col],
-                        [this.row, j],
-                        this,
-                        boardPieces[this.row][j]);
-            
-            validMoves.push(move);
-        }
-
-        break;
-    }
-
-    // moving left
-    for(let j = this.col - 1; j >= 0; j--){
-        // empty square
-        if(boardPieces[this.row][j] === null){
-            move = new Move([this.row, this.col],
-                        [this.row, j],
-                        this,
-                        null);
-            
-            validMoves.push(move);
-            continue;
-        }
-        // attack another piece
-        if(this.color !== boardPieces[this.row][j]){
-            move = new Move([this.row, this.col],
-                        [this.row, j],
-                        this,
-                        boardPieces[this.row][j]);
-            
-            validMoves.push(move);
-        }
-
-        break;
-    }
-
-    // move upwards
-    for(let i = this.row - 1; i >= 0; i--){
-        if(boardPieces[i][this.col] == null){
-            move = new Move([this.row, this.col],
-                [i, this.col],
-                this,
-                null);
-    
-            validMoves.push(move);
-            continue;
-        }
-
-        //attack another piece
-        if(this.color !== boardPieces[i][this.col]){
-            move = new Move([this.row, this.col],
-                [i, this.col],
-                this,
-                boardPieces[i][this.col]);
-    
-            validMoves.push(move);
-        }
-
-        break;
-    }
-
-    // move downwards
-    for(let i = this.row + 1; i < 8; i++){
-        if(boardPieces[i][this.col] == null){
-            move = new Move([this.row, this.col],
-                [i, this.col],
-                this,
-                null);
-    
-            validMoves.push(move);
-            continue;
-        }
-
-        //attack another piece
-        if(this.color !== boardPieces[i][this.col]){
-            move = new Move([this.row, this.col],
-                [i, this.col],
-                this,
-                boardPieces[i][this.col]);
-    
-            validMoves.push(move);
-        }
-
-        break;
     }
 
     return validMoves;
 }
 
-/////////////////////////////////////////// Knight /////////////////////////////////////////////
+/////////////////////////////////////////// Knight(Hosan) /////////////////////////////////////////////
+
+var Knight = function(row, col, color){
+    Piece.call(this, row, col, PiecesEnum.Knight, color);
+
+    this.image = 'assets/Knight-White.png';
+    if(this.color === ColorsEnum.BLACK)
+        this.image = 'assets/Knight-Black.png';
+}
+
+Knight.prototype = Object.create(Piece.prototype);
+
+Knight.prototype.getValidMoves = function(currentBoard){
+    let validMoves = [];
+
+    let dr = [-2, -1, 1, 2, 2, 1, -1, -2];
+    let dc = [ 1,  2, 2, 1,-1,-2, -2, -1];
+
+    for(let i = 0; i < 8; i++){
+        let row = this.row + dr[i];
+        let col = this.col + dc[i];
+
+        if(row < 0 || row >= 8 || col < 0 || col >= 8)
+            continue;
+        
+        //empty cell
+        if(currentBoard[row][col] === null){
+            let move = new Move([this.row, this.col],
+                                [row, col],
+                                this,
+                                null);
+            validMoves.push(move);
+        }
+        //attack
+        else if(currentBoard[row][col].color !== this.color){
+            let move = new Move([this.row, this.col],
+                                [row, col],
+                                this,
+                                currentBoard[row][col]);
+            validMoves.push(move);
+        }
+    }
+
+    return validMoves;
+}
+
+/////////////////////////////////////// Bishop(Feel) //////////////////////////////////////////////////
+
+var Bishop = function(row, col, color){
+    Piece.call(this, row, col, PiecesEnum.BISHOP, color);
+
+    this.image = 'assets/Bishop-White.png';
+    if(this.color === ColorsEnum.BLACK)
+        this.image = 'assets/Bishop-Black.png';
+}
+
+Bishop.prototype = Object.create(Piece.prototype);
+
+Bishop.prototype.getValidMoves = function(currentBoard){
+    let validMoves = [];
+
+    let dr = [-1, -1, 1, 1];
+    let dc = [ 1, -1, 1,-1];
+
+    let row, col;
+    for(let i = 0; i < 4; i++){
+        row = this.row;
+        col = this.col;
+        for(let j = 0; j < 8; j++){
+            row += dr[i];
+            col += dc[i];
+
+            if(row < 0 || row >= 8 || col < 0 || col >= 8)
+                break;
+            
+            if(currentBoard[row][col] === null){
+                let move = new Move([this.row, this.col],
+                                    [row, col],
+                                    this,
+                                    null);
+                
+                validMoves.push(move);
+            }
+            else{
+                // attack enemy
+                if(currentBoard[row][col].color !== this.color){
+                    let move = new Move([this.row, this.col],
+                                        [row, col],
+                                        this,
+                                        currentBoard[row][col]);
+                    
+                    validMoves.push(move);
+                }                
+
+                break;
+            }
+
+        }
+    }
+
+    return validMoves;
+}
+
+/////////////////////////////////// Queen(Wazeer) //////////////////////////////////////////
+
+var Queen = function(row, col, color){
+    Piece.call(this, row, col, PiecesEnum.Queen, color);
+
+    this.image = 'assets/Queen-White.png';
+    if(this.color === ColorsEnum.BLACK)
+        this.image = 'assets/Queen-Black.png';
+}
+
+Queen.prototype = Object.create(Piece.prototype);
+
+Queen.prototype.getValidMoves = function(currentBoard){
+    let validMoves = [];
+
+    let dr = [-1, -1, 1, 1, 0, 0, 1, -1];
+    let dc = [ 1, -1, 1,-1, 1,-1, 0,  0];
+
+    let row, col;
+    for(let i = 0; i < 8; i++){
+        row = this.row;
+        col = this.col;
+        for(let j = 0; j < 8; j++){
+            row += dr[i];
+            col += dc[i];
+
+            if(row < 0 || row >= 8 || col < 0 || col >= 8)
+                break;
+            
+            if(currentBoard[row][col] === null){
+                let move = new Move([this.row, this.col],
+                                    [row, col],
+                                    this,
+                                    null);
+                
+                validMoves.push(move);
+            }
+            else{
+                // attack enemy
+                if(currentBoard[row][col].color !== this.color){
+                    let move = new Move([this.row, this.col],
+                                        [row, col],
+                                        this,
+                                        currentBoard[row][col]);
+                    
+                    validMoves.push(move);
+                }                
+
+                break;
+            }
+
+        }
+    }
+
+    return validMoves;
+}
+
+////////////////////////////////// King ///////////////////////////////////////////////////////
+
+var King = function(row, col, color){
+    Piece.call(this, row, col, PiecesEnum.KING, color);
+
+    this.image = 'assets/King-White.png';
+    if(this.color === ColorsEnum.BLACK)
+        this.image = 'assets/King-Black.png';
+}
+
+King.prototype = Object.create(Piece.prototype);
+
+King.prototype.getValidMoves = function(currentBoard){
+    let validMoves = [];
+
+    let dr = [-1, -1, 1, 1, 0, 0, 1, -1];
+    let dc = [ 1, -1, 1,-1, 1,-1, 0,  0];
+
+    let row, col;
+
+    for(let i = 0; i < 8; i++){
+        row = this.row + dr[i];
+        col = this.col + dc[i];
+
+        if(row < 0 || row >= 8 || col < 0 || col >= 8)
+            break;
+        
+        if(currentBoard[row][col] === null){
+            let move = new Move([this.row, this.col],
+                                [row, col],
+                                this,
+                                null);
+            
+            validMoves.push(move);
+        }
+        else{
+            // attack enemy
+            if(currentBoard[row][col].color !== this.color){
+                let move = new Move([this.row, this.col],
+                                    [row, col],
+                                    this,
+                                    currentBoard[row][col]);
+                
+                validMoves.push(move);
+            }                
+        }
+
+    }
+
+    return validMoves;
+}

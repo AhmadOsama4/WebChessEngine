@@ -8,21 +8,21 @@
     for(let i = 0; i < 8; i++){
         squaresIDs[i] = new Array(8);
         boardPieces[i] = new Array(8);
-
+        
         let row = String.fromCharCode('A'.charCodeAt() + i);
-
+        
         for(let j = 0; j < 8; j++){
             let col = String(j);
             squaresIDs[i][j] = row + col;
             boardPieces[i][j] = null;
-
+            
             square = document.createElement('div');
             square.id = squaresIDs[i][j];
-
+            
             if(isWhite)
-                square.classList.add('square', 'white');
+            square.classList.add('square', 'white');
             else
-                square.classList.add('square', 'black');
+            square.classList.add('square', 'black');
             
             // console.log('row: ' + row + ' col: ' + col + ' ' + squaresIDs[i][j]);
             board.appendChild(square);
@@ -30,12 +30,20 @@
         }
         isWhite = !isWhite;
     }
-
+    
     // Chess pieces locations
     for(let i = 0 ; i < 8; i++){
         boardPieces[6][i] = new Pawn(6, i, ColorsEnum.WHITE);
         boardPieces[1][i] = new Pawn(1, i, ColorsEnum.BLACK);
     }
+    // white player starts
+    Turn = ColorsEnum.WHITE;
+
+
+    function render(){
+        console.log('Rendering');
+    }
+
 
     // draw Pieces
     for(let i = 0; i < 8; i++){
@@ -49,19 +57,18 @@
         imageDiv.appendChild(whiteImage);
 
     }
+    render();
 
-    // white player starts
-    Turn = ColorsEnum.WHITE;
+})(this);
 
-})();
+// var piece = new King(2, 3, ColorsEnum.WHITE);
 
+// var moves = piece.getValidMoves(boardPieces);
 
-rook = new Rook(4, 5, ColorsEnum.WHITE);
-moves = rook.getValidMoves();
+// for(let i = 0; i < moves.length; i++){
+//     console.log(moves[i].to[0] + " " + moves[i].to[1]);
+//     if(moves[i].attack)
+//         console.log('Attack');
+// }
 
-for(let i = 0; i < moves.length; i++){
-    let row = moves[i].to[0];
-    let col = moves[i].to[1];
-
-    console.log(row + " " + col);
-}
+this.render();
