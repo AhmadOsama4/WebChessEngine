@@ -81,7 +81,6 @@ var Move = function(from, to, piece, attack)
 /////////////////////////////////////////////// PAWN(Askary) //////////////////////////////////////////////////////
 var Pawn = function(row, col, color){
     Piece.call(this, row, col, PiecesEnum.PAWN, color)
-    this.doneMove = false;
     
     this.image = 'assets/Pawn-White.png';
     if(this.color === ColorsEnum.BLACK)
@@ -106,7 +105,7 @@ Pawn.prototype.getValidMoves = function(currentBoard){
         }
 
         // move 2 steps forward
-        if(this.doneMove === false && currentBoard[this.row - 1][this.col] === null 
+        if(this.row === 6 && currentBoard[this.row - 1][this.col] === null 
             && currentBoard[this.row - 2][this.col] === null) // not yet moved
         { 
             let move = new Move([this.row, this.col],
@@ -145,7 +144,7 @@ Pawn.prototype.getValidMoves = function(currentBoard){
         }
 
          // move 2 steps forward
-        if(this.doneMove === false && currentBoard[this.row + 1][this.col] === null 
+        if(this.row === 1 && currentBoard[this.row + 1][this.col] === null 
             && currentBoard[this.row + 2][this.col] === null) // not yet moved
         { 
             let move = new Move([this.row, this.col],
@@ -418,7 +417,7 @@ King.prototype.getValidMoves = function(currentBoard){
         col = this.col + dc[i];
 
         if(row < 0 || row >= 8 || col < 0 || col >= 8)
-            break;
+            continue;
         
         if(currentBoard[row][col] === null){
             let move = new Move([this.row, this.col],
@@ -441,6 +440,6 @@ King.prototype.getValidMoves = function(currentBoard){
         }
 
     }
-
+    console.log(validMoves);
     return validMoves;
 }

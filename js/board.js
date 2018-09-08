@@ -84,8 +84,7 @@
     render();
 
     // white player starts
-    Turn = ColorsEnum.WHITE;
-
+    currentTurn = 0;
 })();
 
 // var piece = new King(2, 3, ColorsEnum.WHITE);

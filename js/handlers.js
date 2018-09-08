@@ -2,7 +2,7 @@
 var selectedDiv = null;
 var selectedPiece = null;
 var selectedPieceValidMoves = {};
-var Turn;
+var Turn = [ColorsEnum.WHITE, ColorsEnum.BLACK];
 
 // get the position of the div from its id
 function getDivPosition(id){
@@ -22,9 +22,7 @@ function getDivID(row, col){
 }
 
 function checkMoveValidity(currentBoard, move){
-    let allies = [],
-        allyKing;
-
+    let allyKing;
     let enemies = [];
     // perform move
     move.piece.movePiece(move, currentBoard);
@@ -38,28 +36,30 @@ function checkMoveValidity(currentBoard, move){
             if(currentBoard[i][j].color === move.piece.color){ // ally
                 if(currentBoard[i][j].type === PiecesEnum.KING)
                     allyKing = currentBoard[i][j];
-                else
-                    allies.push(currentBoard[i][j]);
             }
             else{ // enemy
-                if(currentBoard[i][j].type === PiecesEnum.KING)
-                    enemyKing = currentBoard[i][j];
-                else
+                if(currentBoard[i][j].type !== PiecesEnum.KING)
                     enemies.push(currentBoard[i][j]);
             }
         }
     }
-    // check if my king will be under attack after this move
-    enemies.forEach(function(enemy){
+    //console.log(enemies);
+    // check if king will be under attack after this move
+    for(let i = 0; i < enemies.length; i++){
+        let enemy = enemies[i];
+        //console.log('Enemy');
+        //console.log(enemy);
         let validMoves = enemy.getValidMoves(currentBoard);
 
-        validMoves.forEach(function(move){
-            if(move.to[0] === allyKing.row && move.to[1] === allyKing.col){
+        for(let j = 0; j < validMoves.length; j++){
+            let enemyMove = validMoves[j];
+            if(enemyMove.to[0] === allyKing.row && enemyMove.to[1] === allyKing.col){
                 move.piece.undoMove(move, currentBoard);
+                console.log('INVALID: ' + move.to[0] + ' ' + move.to[1]);
                 return false;
             }
-        });
-    });
+        }
+    }
     move.piece.undoMove(move, currentBoard);
 
     return true;
@@ -79,54 +79,64 @@ function handleSelectedDiv(){
     let row = divPosition[0];
     let col = divPosition[1];
 
-    console.log('Selected div ID ' + this.id);
     // click on square with no pieces selected
-    if(selectedPiece === null && boardPieces[row][col] === null)
+    if(selectedPiece === null && boardPieces[row][col] === null){
+        //console.log('Empty square with no pieces selected');
         return;
+    }
     
     // no piece selected and wrong turn
-    if(selectedPiece === null && Turn !== boardPieces[row][col].color)
+    if(selectedPiece === null && Turn[currentTurn] !== boardPieces[row][col].color){
+        //console.log('No Pieces selected and turn is incorrect');
         return;
+    }
     
     // select same piece twice
-    if(selectedPiece === boardPieces[row][col])
+    if(selectedPiece === boardPieces[row][col]){
+        //console.log('Same piece selected');
         return;
-    
+    }
     // move piece to an empty cell
     if(selectedPiece && boardPieces[row][col] === null && (this.id in selectedPieceValidMoves)){
-        console.log('Moving to empty cell');
+        //console.log('Moving to empty cell');
         let move = selectedPieceValidMoves[this.id];
         selectedPiece.movePiece(move, boardPieces);
         removeSuggestedMoves();
         render();
+        currentTurn = 1 - currentTurn;
         return;
     }
 
     // attack another piece
-    if(selectedPiece && boardPieces[row][col] !== selectedPiece.color && (this.id in selectedPieceValidMoves)){
+    if(selectedPiece && boardPieces[row][col] && boardPieces[row][col].color !== selectedPiece.color 
+        && (this.id in selectedPieceValidMoves)){
+        //console.log('Attacking enemy');
         let move = selectedPieceValidMoves[this.id];
         selectedPiece.movePiece(move, boardPieces);
         removeSuggestedMoves();
         render();
+        currentTurn = 1 - currentTurn;
         return;
     }
     // trying to attack, invalid move
-    if(selectedPiece && boardPieces[row][col] !== selectedPiece.color)
+    if(selectedPiece && boardPieces[row][col] && boardPieces[row][col].color !== selectedPiece.color){
+        //console.log('Invalid attack');
         return;
+    }
     
+    removeSuggestedMoves();
+    if(boardPieces[row][col] === null)
+        return;
 
     // select current piece
     pieceValidMoves = boardPieces[row][col].getValidMoves(boardPieces);
     selectedDiv = boardPieces[row][col];
-
     for(let i = 0; i < pieceValidMoves.length; i++){
         let move = pieceValidMoves[i];
-
         if(!checkMoveValidity(boardPieces, move))
             continue;
-
         let divID = getDivID(move.to[0], move.to[1]);
-        console.log('DivID: ' + divID);
+        
         let div = document.getElementById(divID);
         div.classList.add('suggestedMove');
         selectedPieceValidMoves[divID] = move;
