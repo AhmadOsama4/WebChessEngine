@@ -44,6 +44,20 @@ Piece.prototype.movePiece = function(move, currentBoard){
     currentBoard[this.row][this.col] = this;
 }
 
+Piece.prototype.undoMove = function(move, currentBoard){
+    currentBoard[this.row][this.col] = null;
+    
+    this.row = move.from[0];
+    this.col = move.from[1];
+
+    currentBoard[this.row][this.col] = this;
+
+    if(move.attack){
+        currentBoard[move.to[0]][move.to[1]] = move.attack;
+        move.attack.isAlive = true;
+    }
+}
+
 Piece.prototype.getPieceDivID = function(){
     let row = String.fromCharCode('A'.charCodeAt() + this.row);
     let col = String(this.col);

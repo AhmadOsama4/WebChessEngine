@@ -18,12 +18,14 @@
             
             square = document.createElement('div');
             square.id = squaresIDs[i][j];
+
+            square.addEventListener('click', handleSelectedDiv);
             
-            if(isWhite)
-            square.classList.add('square', 'white');
-            else
-            square.classList.add('square', 'black');
-            
+            if(isWhite){
+                square.classList.add('square', 'white');            
+            }else{
+                square.classList.add('square', 'black');
+            }
             // console.log('row: ' + row + ' col: ' + col + ' ' + squaresIDs[i][j]);
             board.appendChild(square);
             isWhite = !isWhite;
@@ -71,7 +73,7 @@
                 imgTag.src = boardPieces[i][j].image;
 
                 let imageDiv = document.getElementById(boardPieces[i][j].getPieceDivID());
-                imageDiv.addEventListener('click', handleSelectedDiv);
+                //imageDiv.addEventListener('click', handleSelectedDiv);
 
                 imageDiv.appendChild(imgTag);
             }

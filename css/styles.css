@@ -29,6 +29,6 @@ body {
 }
 
 .suggestedMove{
+    background-color:lightseagreen;
     opacity: 0.5;
-    background-color:green;
 }
