@@ -31,35 +31,60 @@
         isWhite = !isWhite;
     }
     
-    // Chess pieces locations
-    for(let i = 0 ; i < 8; i++){
-        boardPieces[6][i] = new Pawn(6, i, ColorsEnum.WHITE);
-        boardPieces[1][i] = new Pawn(1, i, ColorsEnum.BLACK);
+    function addPieces(){
+         // Chess pieces locations
+        for(let i = 0 ; i < 8; i++){
+            boardPieces[6][i] = new Pawn(6, i, ColorsEnum.WHITE);
+            boardPieces[1][i] = new Pawn(1, i, ColorsEnum.BLACK);
+        }
+        // Rooks 
+        boardPieces[7][0] = new Rook(7, 0, ColorsEnum.WHITE);
+        boardPieces[7][7] = new Rook(7, 7, ColorsEnum.WHITE);
+        boardPieces[0][0] = new Rook(0, 0, ColorsEnum.BLACK);
+        boardPieces[0][7] = new Rook(0, 7, ColorsEnum.BLACK);
+        // Knights
+        boardPieces[7][1] = new Knight(7, 1, ColorsEnum.WHITE);
+        boardPieces[7][6] = new Knight(7, 6, ColorsEnum.WHITE);
+        boardPieces[0][1] = new Knight(0, 1, ColorsEnum.BLACK);
+        boardPieces[0][6] = new Knight(0, 6, ColorsEnum.BLACK);
+        // Bishops
+        boardPieces[7][2] = new Bishop(7, 2, ColorsEnum.WHITE);
+        boardPieces[7][5] = new Bishop(7, 5, ColorsEnum.WHITE);
+        boardPieces[0][2] = new Bishop(0, 2, ColorsEnum.BLACK);
+        boardPieces[0][5] = new Bishop(0, 5, ColorsEnum.BLACK);
+        // Queens
+        boardPieces[7][3] = new Queen(7, 3, ColorsEnum.WHITE);
+        boardPieces[0][3] = new Queen(0, 3, ColorsEnum.BLACK);
+        // Kings
+        boardPieces[7][4] = new King(7, 4, ColorsEnum.WHITE);
+        boardPieces[0][4] = new King(0, 4, ColorsEnum.BLACK);;
     }
+
+    function render(){
+        // draw Pieces
+        for(let i = 0; i < 8; i++){
+            for(let j = 0; j < 8; j++){
+                if(boardPieces[i][j] === null)
+                    continue;
+
+                let imgTag = document.createElement('img');
+                imgTag.src = boardPieces[i][j].image;
+
+                let imageDiv = document.getElementById(boardPieces[i][j].getPieceDivID());
+                imageDiv.addEventListener('click', handleSelectedDiv);
+
+                imageDiv.appendChild(imgTag);
+            }
+        }
+    }
+
+    addPieces();
+    render();
+
     // white player starts
     Turn = ColorsEnum.WHITE;
 
-
-    function render(){
-        console.log('Rendering');
-    }
-
-
-    // draw Pieces
-    for(let i = 0; i < 8; i++){
-        var whiteImage = document.createElement('img');
-        whiteImage.src = boardPieces[6][i].image;
-
-        var imageDiv = document.getElementById(boardPieces[6][i].getPieceDivID());
-
-        imageDiv.addEventListener('click', handleSelectedDiv);
-
-        imageDiv.appendChild(whiteImage);
-
-    }
-    render();
-
-})(this);
+})();
 
 // var piece = new King(2, 3, ColorsEnum.WHITE);
 
@@ -70,5 +95,3 @@
 //     if(moves[i].attack)
 //         console.log('Attack');
 // }
-
-this.render();

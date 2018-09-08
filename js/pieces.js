@@ -22,26 +22,26 @@ var Piece = function(row, col, type, color){
     this.isAlive = true;
 }
 
-Piece.prototype.removePiece = function(){
+Piece.prototype.removePiece = function(currentBoard){
     this.isAlive = false;
-    if(this.color == ColorsEnum.WHITE){
+    if(this.color === ColorsEnum.WHITE){
         attackedWhitePieces.push(this);
     }
     else{
         attackedBlackPieces.push(this);
     }
-    boardPieces[this.row][this.col] = null;
+    currentBoard[this.row][this.col] = null;
 }
 
-Piece.prototype.movePiece = function(move){
-    boardPieces[this.row][this.col] = null;
+Piece.prototype.movePiece = function(move, currentBoard){
+    currentBoard[this.row][this.col] = null;
     this.row = move.to[0];
     this.col = move.to[1];
 
     if(move.attack !== null)
-        move.attack.removePiece();
+        currentBoard[move.to[0]][move.to[1]].removePiece(currentBoard);
     
-    boardPieces[this.row][this.col] = this;
+    currentBoard[this.row][this.col] = this;
 }
 
 Piece.prototype.getPieceDivID = function(){
