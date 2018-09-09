@@ -21,6 +21,31 @@ function getDivID(row, col){
     return id;
 }
 
+function checkForCheckMate(currentBoard){
+    for(let i = 0; i < 8; i++){
+        for(let j = 0; j < 8; j++){
+            if(currentBoard[i][j] === null || currentBoard[i][j].color === Turn[currentTurn])
+                continue;
+            
+            let enemyValidMoves = currentBoard[i][j].getValidMoves(currentBoard);
+            for(let k = 0; k < enemyValidMoves.length; k++){
+                let move = enemyValidMoves[k]
+
+                if(checkMoveValidity(currentBoard, move)){
+                    return;
+                }
+            }
+        }
+    }
+    setTimeout(function() { 
+        alert('Player ' + (1 - currentTurn) + ' Won !!');
+        location.reload();
+    }, 500);
+    //alert('Player ' + (1 - currentTurn) + ' Won !!');
+    // reload page: restart the game
+    //location.reload();
+}
+
 function checkMoveValidity(currentBoard, move){
     let allyKing;
     let enemies = [];
@@ -43,19 +68,16 @@ function checkMoveValidity(currentBoard, move){
             }
         }
     }
-    //console.log(enemies);
     // check if king will be under attack after this move
     for(let i = 0; i < enemies.length; i++){
         let enemy = enemies[i];
-        //console.log('Enemy');
-        //console.log(enemy);
         let validMoves = enemy.getValidMoves(currentBoard);
 
         for(let j = 0; j < validMoves.length; j++){
             let enemyMove = validMoves[j];
             if(enemyMove.to[0] === allyKing.row && enemyMove.to[1] === allyKing.col){
                 move.piece.undoMove(move, currentBoard);
-                console.log('INVALID: ' + move.to[0] + ' ' + move.to[1]);
+                //console.log('INVALID: ' + move.to[0] + ' ' + move.to[1]);
                 return false;
             }
         }
@@ -83,8 +105,7 @@ function handleSelectedDiv(){
     if(selectedPiece === null && boardPieces[row][col] === null){
         //console.log('Empty square with no pieces selected');
         return;
-    }
-    
+    }    
     // no piece selected and wrong turn
     if(selectedPiece === null && Turn[currentTurn] !== boardPieces[row][col].color){
         //console.log('No Pieces selected and turn is incorrect');
@@ -103,6 +124,8 @@ function handleSelectedDiv(){
         selectedPiece.movePiece(move, boardPieces);
         removeSuggestedMoves();
         render();
+        // check if player won
+        checkForCheckMate(boardPieces)
         currentTurn = 1 - currentTurn;
         return;
     }
@@ -115,6 +138,8 @@ function handleSelectedDiv(){
         selectedPiece.movePiece(move, boardPieces);
         removeSuggestedMoves();
         render();
+        // check if player won
+        checkForCheckMate(boardPieces)
         currentTurn = 1 - currentTurn;
         return;
     }

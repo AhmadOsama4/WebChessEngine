@@ -440,6 +440,6 @@ King.prototype.getValidMoves = function(currentBoard){
         }
 
     }
-    console.log(validMoves);
+    //console.log(validMoves);
     return validMoves;
 }
