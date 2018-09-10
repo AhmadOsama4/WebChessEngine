@@ -96,6 +96,13 @@ function removeSuggestedMoves(){
     selectedPiece = null;
 }
 
+// function handleComputerMove(){
+//     performComputerMove(boardPieces);
+//     render();
+//     checkForCheckMate(boardPieces);
+//     currentTurn = 1 - currentTurn;
+// }
+
 function handleSelectedDiv(){
     divPosition = getDivPosition(this.id);
     let row = divPosition[0];
@@ -127,6 +134,10 @@ function handleSelectedDiv(){
         // check if player won
         checkForCheckMate(boardPieces)
         currentTurn = 1 - currentTurn;
+
+        if(isSinglePlayer)
+            handleComputerMove();
+
         return;
     }
 
@@ -141,6 +152,10 @@ function handleSelectedDiv(){
         // check if player won
         checkForCheckMate(boardPieces)
         currentTurn = 1 - currentTurn;
+
+        if(isSinglePlayer)
+            handleComputerMove();
+
         return;
     }
     // trying to attack, invalid move
