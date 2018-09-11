@@ -99,12 +99,6 @@ function miniMaxAlgorithm(currentBoard, depth, alpha, beta, isMax){
                 
                 blackPieces[i].movePiece(move, currentBoard);
                 
-                if(move.attack){
-                    console.log(move);
-                    if(move.attack.type === PiecesEnum.QUEEN){
-                        console.log(currentBoard);
-                    }
-                }
                 let retVal = miniMaxAlgorithm(currentBoard, depth + 1, alpha, beta, !isMax);                
 
                 if(retVal[0] > alpha){

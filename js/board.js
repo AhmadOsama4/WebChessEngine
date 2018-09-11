@@ -85,7 +85,35 @@
 
     // white player starts
     currentTurn = 0;
+
+    var inputDialog = document.getElementById('inputDialog');
+    inputDialog.showModal();
+
 })();
+
+function getUserInput(){
+    console.log('Getting Input');
+    var numOfPlayers = document.querySelector("form").elements[0].value;
+    var difficulty    = document.querySelector("form").elements[1].value;
+
+    // Play against the computer
+    if(numOfPlayers[0] == '1'){
+        isSinglePlayer = true;
+
+        if(difficulty == 'Easy'){
+            difficultyDepth = 1;
+        }
+        else if(difficulty == 'Medium'){
+            difficultyDepth = 2;
+        }
+        else{
+            difficultyDepth = 3;
+        }
+    }
+
+    console.log(numOfPlayers);
+    console.log(difficulty);
+}
 
 // var piece = new King(2, 3, ColorsEnum.WHITE);
 
