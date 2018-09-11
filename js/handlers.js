@@ -37,6 +37,7 @@ function checkForCheckMate(currentBoard){
             }
         }
     }
+    console.log(currentBoard);
     setTimeout(function() { 
         alert('Player ' + (1 - currentTurn) + ' Won !!');
         location.reload();

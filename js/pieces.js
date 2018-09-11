@@ -84,7 +84,7 @@ var Pawn = function(row, col, color){
     
     this.image = 'assets/Pawn-White.png';
     if(this.color === ColorsEnum.BLACK)
-        this.image = 'assets/Pawn-Black.png';
+        this.image = 'assets/Pawn-Black.png';    
 }
 
 Pawn.prototype = Object.create(Piece.prototype);
@@ -235,7 +235,7 @@ Rook.prototype.getValidMoves = function(currentBoard){
 /////////////////////////////////////////// Knight(Hosan) /////////////////////////////////////////////
 
 var Knight = function(row, col, color){
-    Piece.call(this, row, col, PiecesEnum.Knight, color);
+    Piece.call(this, row, col, PiecesEnum.KNIGHT, color);
 
     this.image = 'assets/Knight-White.png';
     if(this.color === ColorsEnum.BLACK)
@@ -285,7 +285,7 @@ var Bishop = function(row, col, color){
 
     this.image = 'assets/Bishop-White.png';
     if(this.color === ColorsEnum.BLACK)
-        this.image = 'assets/Bishop-Black.png';
+        this.image = 'assets/Bishop-Black.png';    
 }
 
 Bishop.prototype = Object.create(Piece.prototype);
@@ -338,7 +338,7 @@ Bishop.prototype.getValidMoves = function(currentBoard){
 /////////////////////////////////// Queen(Wazeer) //////////////////////////////////////////
 
 var Queen = function(row, col, color){
-    Piece.call(this, row, col, PiecesEnum.Queen, color);
+    Piece.call(this, row, col, PiecesEnum.QUEEN, color);
 
     this.image = 'assets/Queen-White.png';
     if(this.color === ColorsEnum.BLACK)
@@ -399,7 +399,7 @@ var King = function(row, col, color){
 
     this.image = 'assets/King-White.png';
     if(this.color === ColorsEnum.BLACK)
-        this.image = 'assets/King-Black.png';
+        this.image = 'assets/King-Black.png';    
 }
 
 King.prototype = Object.create(Piece.prototype);

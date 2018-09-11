@@ -53,7 +53,7 @@ function evaluateBoard(currentBoard){
             boardEvalution += evaluatePiece(currentBoard[i][j]);
         }
     }
-    console.log('Board Eval: ' + boardEvalution);
+    //console.log('Board Eval: ' + boardEvalution);
 
     return boardEvalution;
 }
@@ -71,7 +71,8 @@ function miniMaxAlgorithm(currentBoard, depth, alpha, beta, isMax){
         return [evaluateBoard(currentBoard)];
     }
 
-    let whitePieces = [], blackPieces = [];
+    var whitePieces = [], 
+        blackPieces = [];
 
     for(let i = 0; i < 8; i++){
         for(let j = 0; j < 8; j++){
@@ -84,8 +85,7 @@ function miniMaxAlgorithm(currentBoard, depth, alpha, beta, isMax){
                 whitePieces.push(currentBoard[i][j]);
         }
     }
-
-    let bestMove = isMax? [-infinity, null] : [infinity, null];
+    let bestMove = isMax? [alpha, null] : [beta, null];
 
     if(isMax){
         // pieces
@@ -98,23 +98,27 @@ function miniMaxAlgorithm(currentBoard, depth, alpha, beta, isMax){
                     continue;
                 
                 blackPieces[i].movePiece(move, currentBoard);
-
-                let retVal = miniMaxAlgorithm(currentBoard, depth + 1, alpha, beta, !isMax);
-
-                // check if we will prune
-                if(retVal[0] <= alpha || retVal[0] >= beta){
-                    blackPieces[i].undoMove(move, currentBoard);
-                    return bestMove;
+                
+                if(move.attack){
+                    console.log(move);
+                    if(move.attack.type === PiecesEnum.QUEEN){
+                        console.log(currentBoard);
+                    }
                 }
+                let retVal = miniMaxAlgorithm(currentBoard, depth + 1, alpha, beta, !isMax);                
+
                 if(retVal[0] > alpha){
                     alpha = retVal[0];
                     bestMove = [alpha, move];
+                }
+                if(alpha >= beta){
+                    blackPieces[i].undoMove(move, currentBoard);
+                    return bestMove;
                 }
                 //alpha = Math.max(alpha, retVal[0]);
 
                 blackPieces[i].undoMove(move, currentBoard);
             }
-
         }
     }
     else{
@@ -128,16 +132,16 @@ function miniMaxAlgorithm(currentBoard, depth, alpha, beta, isMax){
                 
                 whitePieces[i].movePiece(move, currentBoard);
 
-                let retVal = miniMaxAlgorithm(currentBoard, depth + 1, alpha, beta, isMax);
+                let retVal = miniMaxAlgorithm(currentBoard, depth + 1, alpha, beta, !isMax);
 
-                // check if we will prune
-                if(retVal[0] <= alpha || retVal[0] >= beta){
-                    whitePieces[i].undoMove(move, currentBoard);
-                    return bestMove;
-                }
+                // check for pruning
                 if(retVal[0] < bestMove[0]){
                     beta = retVal[0];
                     bestMove = [beta, move];
+                }
+                if(alpha >= beta){
+                    whitePieces[i].undoMove(move, currentBoard);
+                    return bestMove;
                 }
                 //beta = Math.min(beta, retVal[0]);
 
@@ -147,7 +151,8 @@ function miniMaxAlgorithm(currentBoard, depth, alpha, beta, isMax){
         }
     }
 
-    console.log(bestMove);
+    // console.log(bestMove);
+    // console.log('');
     return bestMove;
 }
 
