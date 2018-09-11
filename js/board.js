@@ -26,7 +26,6 @@
             }else{
                 square.classList.add('square', 'black');
             }
-            // console.log('row: ' + row + ' col: ' + col + ' ' + squaresIDs[i][j]);
             board.appendChild(square);
             isWhite = !isWhite;
         }
@@ -91,10 +90,23 @@
 
 })();
 
+function numOfPlayersChange(){
+    var numOfPlayers = document.querySelector("form").elements[0].value;
+
+    var difficulty = document.getElementById("difficulty");
+    
+    if(numOfPlayers[0] == '2'){
+        difficulty.style.display = "none";
+    }
+    else{
+        difficulty.style.display = "block";
+    }
+}
+
 function getUserInput(){
     console.log('Getting Input');
     var numOfPlayers = document.querySelector("form").elements[0].value;
-    var difficulty    = document.querySelector("form").elements[1].value;
+    var difficulty   = document.querySelector("form").elements[1].value;
 
     // Play against the computer
     if(numOfPlayers[0] == '1'){
@@ -114,13 +126,3 @@ function getUserInput(){
     console.log(numOfPlayers);
     console.log(difficulty);
 }
-
-// var piece = new King(2, 3, ColorsEnum.WHITE);
-
-// var moves = piece.getValidMoves(boardPieces);
-
-// for(let i = 0; i < moves.length; i++){
-//     console.log(moves[i].to[0] + " " + moves[i].to[1]);
-//     if(moves[i].attack)
-//         console.log('Attack');
-// }

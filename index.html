@@ -9,18 +9,18 @@
 
     <dialog id = "inputDialog">
         <form method="dialog">
-            <p>
+            <p id = "numberOfPlayers">
                 <label>Number of Players:
-                    <select name"numberOfPlayers">
+                    <select onchange="numOfPlayersChange()">
                         <option>1 Player (play against computer)</option>
                         <option>2 Players</option>
                     </select>
                 </label>
             </p>
             
-            <p>
+            <p id = "difficulty">
                 <label>Select Difficulty
-                    <select name"difficulty">
+                    <select>
                         <option>Easy</option>
                         <option>Medium</option>
                         <option>Hard</option>
