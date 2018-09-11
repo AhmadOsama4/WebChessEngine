@@ -8,8 +8,54 @@ function handleComputerMove(){
     currentTurn = 1 - currentTurn;
 }
 
+function evaluatePiece(piece){
+    if(piece === null)
+        return 0;
+    
+    let evaluation = 0;
+
+    if(piece.type === PiecesEnum.PAWN){
+        evaluation = 10 + (piece.color === ColorsEnum.WHITE ? 
+            pawnEvalWhite[piece.row][piece.col] : pawnEvalBlack[piece.row][piece.col]);
+    }
+    else if(piece.type === PiecesEnum.ROOK){
+        evaluation = 50 + (piece.color === ColorsEnum.WHITE ?
+            rookEvalWhite[piece.row][piece.col] : rookEvalBlack[piece.row][piece.col]);
+    }
+    else if(piece.type === PiecesEnum.KNIGHT){
+        evaluation = 30 + (piece.color === ColorsEnum.WHITE ? 
+            knightEval[piece.row][piece.col] : knightEval[piece.row][piece.col]);
+    }
+    else if(piece.type === PiecesEnum.BISHOP){
+        evaluation = 30 + (piece.color === ColorsEnum.WHITE ? 
+            bishopEvalWhite[piece.row][piece.col] : bishopEvalBlack[piece.row][piece.col]);
+    }
+    else if(piece.type === PiecesEnum.QUEEN){
+        evaluation = 900 + (piece.color === ColorsEnum.WHITE ? 
+            evalQueen[piece.row][piece.col] : evalQueen[piece.row][piece.col]);
+    }
+    else if(piece.type === PiecesEnum.KING){
+        evaluation = 90 + (piece.color === ColorsEnum.WHITE ? 
+            kingEvalWhite[piece.row][piece.col] : kingEvalBlack[piece.row][piece.col]);
+    }
+
+    if(piece.color === ColorsEnum.WHITE)
+        evaluation = -evaluation;
+
+    return evaluation;
+}
+
 function evaluateBoard(currentBoard){
-    return 5;
+    let boardEvalution = 0;
+
+    for(let i = 0; i < 8; i++){
+        for(let j = 0; j < 8; j++){
+            boardEvalution += evaluatePiece(currentBoard[i][j]);
+        }
+    }
+    console.log('Board Eval: ' + boardEvalution);
+
+    return boardEvalution;
 }
 
 function performComputerMove(currentBoard){
@@ -104,3 +150,80 @@ function miniMaxAlgorithm(currentBoard, depth, alpha, beta, isMax){
     console.log(bestMove);
     return bestMove;
 }
+
+var pawnEvalWhite =
+    [
+        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+        [5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0],
+        [1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
+        [0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
+        [0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
+        [0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
+        [0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5],
+        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
+    ];
+
+var pawnEvalBlack = pawnEvalWhite.slice().reverse();
+
+var knightEval =
+    [
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+        [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
+        [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
+        [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+        [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
+        [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
+        [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
+    ];
+
+var bishopEvalWhite = [
+    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
+    [ -1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
+    [ -1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
+    [ -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
+    [ -1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
+    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+];
+
+var bishopEvalBlack = bishopEvalWhite.slice().reverse();
+
+var rookEvalWhite = [
+    [  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+    [  0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [  0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0]
+];
+
+var rookEvalBlack = rookEvalWhite.slice().reverse();
+
+var evalQueen = [
+    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [ -0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [  0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [ -1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
+];
+
+var kingEvalWhite = [
+
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+    [ -1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+    [  2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0 ],
+    [  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0 ]
+];
+
+var kingEvalBlack = kingEvalWhite.slice().reverse();
