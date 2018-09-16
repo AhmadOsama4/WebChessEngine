@@ -64,8 +64,7 @@ function checkMoveValidity(currentBoard, move){
                     allyKing = currentBoard[i][j];
             }
             else{ // enemy
-                if(currentBoard[i][j].type !== PiecesEnum.KING)
-                    enemies.push(currentBoard[i][j]);
+                enemies.push(currentBoard[i][j]);
             }
         }
     }
